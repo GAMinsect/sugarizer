@@ -1,6 +1,6 @@
 ﻿// Level config
 FoodChain.playLevels = [
-	{ flies: 2, rocks: 2, snakes: 0, time: 15 },   // Level 1
+	{ flies: 2, rocks: 4, snakes: 0, time: 15 },   // Level 1
 	{ flies: 2, rocks: 3, snakes: 0, time: 10 },   // Level 2
 	{ flies: 3, rocks: 3, snakes: 0, time: 15 },   // Level 3
 	{ flies: 3, rocks: 4, snakes: 1, time: 30 },   // Level 4
@@ -151,11 +151,14 @@ enyo.kind({
 
 				// ... while don't intersect with ...
 				function(n, s) {
-					return !n.intersect(s);
+					return !n.intersect(s) && n.distance(s) >= 250;
 				},
 
 				// ... other rocks and frog
-				enyo.cloneArray(this.rocks).concat(this.frog)
+				enyo.cloneArray(this.rocks).concat(this.frog),
+
+				// If there's no space to spawn a rock even after 24 attemp give up
+				true
 			);
 			this.rocks.push(rock);
 		}

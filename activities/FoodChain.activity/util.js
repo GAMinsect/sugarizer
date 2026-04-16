@@ -78,10 +78,11 @@ FoodChain.sleep = function(delay) {
 };
 
 // Create a object respecting a condition on a set of object
-FoodChain.createWithCondition = function(create, condition, set) {
+FoodChain.createWithCondition = function(create, condition, set, dontifwrong=false) {
 	var conditionValue;
 	var newObject;
 	var time = 0;
+	var limit = dontifwrong ? 12 : 24;
 	do {
 		conditionValue = true;
 		newObject = create();
@@ -89,9 +90,17 @@ FoodChain.createWithCondition = function(create, condition, set) {
 			conditionValue = condition(newObject, set[i]);
 		}
 		time++;
-	} while (!conditionValue && time < 12); // time to avoid infinite or too long loop in very complex situation
+	} while (!conditionValue && time < limit); // time to avoid infinite or too long loop in very complex situation
 	if (!conditionValue)
 		FoodChain.log("WARNING: out of pre-requisite creating "+newObject.id);
+	if (dontifwrong && time >= limit){ // It means we could spawn the object even after 24 attempts, so we give up
+		newObject.width = 0;
+		newObject.height = 0;
+
+		// Draw It out of the screen
+		newObject.x = 100000;
+		newObject.y = 100000;
+	}
 	return newObject;
 };
 
